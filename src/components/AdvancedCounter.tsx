@@ -1,5 +1,184 @@
-function AdvancedCounter(){
-    return <div>Counter coming soon</div>;
+// AdvancedCounter.tsx — counter with history, auto-save, keyboard, reset, and step input
+//
+// IMPORT RULES (prevents verbatimModuleSyntax errors):
+// - "import { ... }" for runtime values (hooks, functions)
+// - "import type { ... }" for type-only imports
+// Here we only need runtime hooks, no type-only imports needed.
+
+import { useState, useEffect } from "react";
+import type { ChangeEvent } from "react";
+
+function AdvancedCounter() {
+    // ===== STATE =====
+    // Load saved count from localStorage, default to 0
+    const [count, setCount] = useState<number>(() => {
+        const saved = localStorage.getItem("counter-value");
+        return saved ? Number(saved) : 0;
+    });
+
+    // History of all count values
+    const [history, setHistory] = useState<number[]>([0]);
+
+    // Custom step value (how much to increment/decrement by)
+    const [step, setStep] = useState<number>(1);
+
+    // ===== DERIVED STATE =====
+    // console.log("Render — count:", count, "step:", step);
+
+    // ===== HANDLERS =====
+    // Using functional updates (prevCount =>) so we always get the latest value,
+    // even if React batches multiple updates together (lesson 1 concept)
+
+    const increment = () => {
+        setCount((prev) => prev + step);
+    };
+
+    const decrement = () => {
+        setCount((prev) => prev - step);
+    };
+
+    const reset = () => {
+        setCount(0);
+        setHistory([0]);
+    };
+
+    const handleStepChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const val = Number(e.target.value);
+        // Only update if it's a valid positive number
+        if (!isNaN(val) && val > 0) setStep(val);
+    };
+
+    // ===== EFFECTS =====
+
+    // 1. History tracking — add count to history whenever it changes
+    useEffect(() => {
+        // console.log("Effect: count changed to", count);
+        setHistory((prev) => [...prev, count]);
+    }, [count]);
+
+    // 2. Auto-save to localStorage whenever count changes
+    useEffect(() => {
+        // console.log("Effect: saving count to localStorage", count);
+        const timeoutId = setTimeout(() => {
+            localStorage.setItem("counter-value", String(count));
+        }, 300);
+
+        // Cleanup: cancel the pending save if count changes again before 300ms
+        // This prevents race conditions from rapid clicks
+        return () => {
+            // console.log("Cleanup: clearing save timeout");
+            clearTimeout(timeoutId);
+        };
+    }, [count]);
+
+    // 3. Keyboard listeners — ArrowUp to increment, ArrowDown to decrement
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "ArrowUp") {
+                // console.log("Keyboard: ArrowUp pressed");
+                setCount((prev) => prev + step);
+            }
+            if (e.key === "ArrowDown") {
+                // console.log("Keyboard: ArrowDown pressed");
+                setCount((prev) => prev - step);
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        // Cleanup: remove the listener when component unmounts or step changes
+        return () => {
+            // console.log("Cleanup: removing keyboard listener");
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [step]); // Re-attach listener when step changes so closure captures new step
+
+    // ===== STYLES =====
+    const containerStyle = {
+        maxWidth: "500px",
+        margin: "2rem auto",
+        padding: "2rem",
+        fontFamily: "Arial, sans-serif",
+        textAlign: "center" as const,
+    };
+
+    const countStyle = {
+        fontSize: "3rem",
+        fontWeight: 700,
+        margin: "1rem 0",
+        color: count > 0 ? "#10b981" : count < 0 ? "#ef4444" : "#6b7280",
+        transition: "color 0.2s ease",
+    };
+
+    const btnStyle = (bg: string) => ({
+        padding: "0.6rem 1.25rem",
+        backgroundColor: bg,
+        color: "#fff",
+        border: "none",
+        borderRadius: "8px",
+        cursor: "pointer",
+        fontSize: "1rem",
+        fontWeight: 600,
+        margin: "0 0.25rem",
+    });
+
+    const inputStyle = {
+        width: "80px",
+        padding: "0.5rem",
+        border: "1px solid #d1d5db",
+        borderRadius: "6px",
+        fontSize: "1rem",
+        textAlign: "center" as const,
+    };
+
+    const historyStyle = {
+        marginTop: "1.5rem",
+        padding: "1rem",
+        backgroundColor: "#f9fafb",
+        borderRadius: "8px",
+        fontSize: "0.9rem",
+        color: "#4b5563",
+        wordBreak: "break-word" as const,
+    };
+    return (
+        <div style={containerStyle}>
+            <h1>Advanced Counter</h1>
+
+            {/* Current count display */}
+            <div style={countStyle}>{count}</div>
+
+            {/* Increment / Decrement / Reset buttons */}
+            <div style={{ marginBottom: "1.25rem" }}>
+                <button onClick={decrement} style={btnStyle("#ef4444")}>- {step}</button>
+                <button onClick={reset} style={btnStyle("#6b7280")}>Reset</button>
+                <button onClick={increment} style={btnStyle("#10b981")}>+ {step}</button>
+            </div>
+            {/* Step input */}
+            <div style={{ marginBottom: "1rem" }}>
+                <label htmlFor="step-input" style={{ marginRight: "0.5rem", fontSize: "0.9rem", color: "#6b7280" }}>
+                    Step:
+                </label>
+                <input
+                    id="step-input"
+                    type="number"
+                    min="1"
+                    value={step}
+                    onChange={handleStepChange}
+                    style={inputStyle}
+                />
+            </div>
+
+            {/* Keyboard hint */}
+            <p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
+                Use ArrowUp / ArrowDown keys to increment / decrement
+            </p>
+            {/* History */}
+            <div style={historyStyle}>
+                <strong>History:</strong>{" "}
+                {history.join(", ")}
+            </div>
+        </div>
+    );
 }
 
 export default AdvancedCounter;
