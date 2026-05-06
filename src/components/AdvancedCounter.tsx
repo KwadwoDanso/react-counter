@@ -172,3 +172,13 @@ function AdvancedCounter() {
             <p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
                 Use ArrowUp / ArrowDown keys to increment / decrement
             </p>
+            {/* History */}
+            <div style={historyStyle}>
+                <strong>History:</strong>{" "}
+                {history.join(", ")}
+            </div>
+        </div>
+    );
+}
+
+export default AdvancedCounter;
