@@ -153,3 +153,4 @@ function AdvancedCounter() {
                 <button onClick={reset} style={btnStyle("#6b7280")}>Reset</button>
                 <button onClick={increment} style={btnStyle("#10b981")}>+ {step}</button>
             </div>
+            
