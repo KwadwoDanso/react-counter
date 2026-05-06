@@ -153,4 +153,22 @@ function AdvancedCounter() {
                 <button onClick={reset} style={btnStyle("#6b7280")}>Reset</button>
                 <button onClick={increment} style={btnStyle("#10b981")}>+ {step}</button>
             </div>
-            
+            {/* Step input */}
+            <div style={{ marginBottom: "1rem" }}>
+                <label htmlFor="step-input" style={{ marginRight: "0.5rem", fontSize: "0.9rem", color: "#6b7280" }}>
+                    Step:
+                </label>
+                <input
+                    id="step-input"
+                    type="number"
+                    min="1"
+                    value={step}
+                    onChange={handleStepChange}
+                    style={inputStyle}
+                />
+            </div>
+
+            {/* Keyboard hint */}
+            <p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
+                Use ArrowUp / ArrowDown keys to increment / decrement
+            </p>
