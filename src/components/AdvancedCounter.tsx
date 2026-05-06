@@ -140,3 +140,16 @@ function AdvancedCounter() {
         color: "#4b5563",
         wordBreak: "break-word" as const,
     };
+    return (
+        <div style={containerStyle}>
+            <h1>Advanced Counter</h1>
+
+            {/* Current count display */}
+            <div style={countStyle}>{count}</div>
+
+            {/* Increment / Decrement / Reset buttons */}
+            <div style={{ marginBottom: "1.25rem" }}>
+                <button onClick={decrement} style={btnStyle("#ef4444")}>- {step}</button>
+                <button onClick={reset} style={btnStyle("#6b7280")}>Reset</button>
+                <button onClick={increment} style={btnStyle("#10b981")}>+ {step}</button>
+            </div>
