@@ -92,3 +92,51 @@ function AdvancedCounter() {
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [step]); // Re-attach listener when step changes so closure captures new step
+
+    // ===== STYLES =====
+    const containerStyle = {
+        maxWidth: "500px",
+        margin: "2rem auto",
+        padding: "2rem",
+        fontFamily: "Arial, sans-serif",
+        textAlign: "center" as const,
+    };
+
+    const countStyle = {
+        fontSize: "3rem",
+        fontWeight: 700,
+        margin: "1rem 0",
+        color: count > 0 ? "#10b981" : count < 0 ? "#ef4444" : "#6b7280",
+        transition: "color 0.2s ease",
+    };
+
+    const btnStyle = (bg: string) => ({
+        padding: "0.6rem 1.25rem",
+        backgroundColor: bg,
+        color: "#fff",
+        border: "none",
+        borderRadius: "8px",
+        cursor: "pointer",
+        fontSize: "1rem",
+        fontWeight: 600,
+        margin: "0 0.25rem",
+    });
+
+    const inputStyle = {
+        width: "80px",
+        padding: "0.5rem",
+        border: "1px solid #d1d5db",
+        borderRadius: "6px",
+        fontSize: "1rem",
+        textAlign: "center" as const,
+    };
+
+    const historyStyle = {
+        marginTop: "1.5rem",
+        padding: "1rem",
+        backgroundColor: "#f9fafb",
+        borderRadius: "8px",
+        fontSize: "0.9rem",
+        color: "#4b5563",
+        wordBreak: "break-word" as const,
+    };
