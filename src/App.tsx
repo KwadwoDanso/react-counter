@@ -1,5 +1,9 @@
-function App(){
-  return <div>Advanced Counter</div>;
+// App.tsx — renders the AdvancedCounter component
+
+import AdvancedCounter from "./components/AdvancedCounter";
+
+function App() {
+  return <AdvancedCounter />;
 }
 
 export default App;
